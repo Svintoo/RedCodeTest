@@ -1,0 +1,52 @@
+<nav class="navbar navbar-expand-lg border-bottom">
+  <div class="container-fluid">
+    <a [class.darkMode]="darkMode()" [class.lightMode]="!darkMode()" routerLink="/"
+      ><h3>Biblioteket</h3></a
+    >
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a
+            class="navlink active"
+            [class.darkMode]="darkMode()"
+            [class.lightMode]="!darkMode()"
+            aria-current="page"
+            routerLink="/"
+            >Böcker</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="navlink active"
+            [class.darkMode]="darkMode()"
+            [class.lightMode]="!darkMode()"
+            routerLink="/citat"
+            >Citat</a
+          >
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto mb-lg-0">
+        <li class="nav-item align-content-center">
+          <a class="navlink active me-2" routerLink="/login">Logga in</a>
+        </li>
+        <li class="nav-item align-content-center">
+          <button type="button" class="btn btn-light" (click)="toggleDarkMode()">
+            Darkmode
+            <!-- <img src="the icon lib .moon or something"></img> -->
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
