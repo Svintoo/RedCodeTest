@@ -1,6 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './components/navbar/navbar';
+import { DarkMode } from './services/dark-mode';
+import { LocalStorageService } from './services/localstorage';
+import { AuthService } from './services/auth-service';
 
 @Component({
   selector: 'app-root',
@@ -10,5 +13,16 @@ import { Navbar } from './components/navbar/navbar';
 })
 export class App {
   protected readonly title = signal('frontend');
-  darkMode = signal(false);
+
+  theme = inject(DarkMode);
+  localStorageService = inject(LocalStorageService);
+  authService = inject(AuthService);
+
+  constructor() {
+    const themeCookie = this.localStorageService.getItem('website-theme');
+
+    if (themeCookie) {
+      this.theme.darkMode.set(themeCookie === 'true');
+    }
+  }
 }

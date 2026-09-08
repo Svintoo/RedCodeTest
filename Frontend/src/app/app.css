@@ -1,12 +1,3 @@
-.darkMode {
-  background-color: black !important;
-  color: white !important;
-}
-.lightMode {
-  color: black !important;
-  background-color: white !important;
-}
-
 a {
   text-decoration: none;
 }
@@ -31,22 +22,37 @@ h1 {
     'Segoe UI Emoji',
     'Segoe UI Symbol';
 }
+h3 {
+  color: var(--bs-body-color);
+}
 
 p {
   margin: 0;
   color: var(--gray-700);
 }
+form {
+  background-color: var(--bs-body-bg) !important;
+  padding: 1rem;
+  border-radius: 1rem;
+}
+
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
 
 main {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  flex: 1;
   width: 100%;
-  min-height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  box-sizing: inherit;
-  position: relative;
+  box-sizing: border-box;
+  overflow: auto;
 }
+
 .content {
   display: flex;
   justify-content: space-around;
@@ -79,6 +85,31 @@ main {
   border: 0;
   margin: 1rem;
 }
+.book-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 1.5rem;
+}
+
+.modal-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.add-book-modal {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  width: 500px;
+  max-width: 90%;
+  padding: 2rem;
+  border-radius: 8px;
+}
+
 @media screen and (max-width: 650px) {
   .content {
     flex-direction: column;

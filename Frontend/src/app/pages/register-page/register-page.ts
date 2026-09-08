@@ -1,17 +1,16 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { EmailValidator, FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth-service';
 
-type Credentials = {
-  email: string;
-  password: string;
+type UserCredentials = {
+  Email: string;
+  Password: string;
 };
 
 @Component({
-  selector: 'app-login-page',
+  selector: 'app-register-page',
   imports: [FormsModule],
   template: `
-    <h2 class="m-2">Logga in</h2>
+    <h2 class="m-2">Registrering</h2>
     <form class="m-2" #loginForm="ngForm" (ngSubmit)="submitLogin()">
       <div class="mb-3">
         <label for="email" class="form-label">Email address</label>
@@ -40,24 +39,16 @@ type Credentials = {
     </form>
   `,
 })
-export class LoginPage {
+export class RegisterPage {
   email = '';
   password = '';
-
-  authService = inject(AuthService);
 
   submitLogin() {
     if (!this.email || !this.password) {
       //toast?
       return;
     }
-    const credentials: Credentials = {
-      email: this.email,
-      password: this.password,
-    };
-    
-    //await LoginService.logIn(credentials) ok save token
-    console.log('logging in');
-    this.authService.login(credentials);
+    //await LoginService.signUp(credentials) ok save token
+    console.log('signing up');
   }
 }

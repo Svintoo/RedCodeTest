@@ -1,17 +1,22 @@
-import { Component,input, output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { DarkMode } from '../../services/dark-mode';
+import { LocalStorageService } from '../../services/localstorage';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-navbar',
   imports: [RouterLink],
   templateUrl: './navbar.html',
-  styleUrl:'../../app.css'
+  styleUrl: '../../app.css',
 })
 export class Navbar {
-    darkMode = input(false);
-    darkModeChange = output<boolean>();
+  theme = inject(DarkMode);
+  localStorageService = inject(LocalStorageService);
+  authService = inject(AuthService);
 
-      toggleDarkMode() {
-    this.darkModeChange.emit(!this.darkMode());
+  toggleDarkMode() {
+    this.theme.toggle();
+    this.localStorageService.setItem('website-theme', this.theme.darkMode() ? 'true' : 'false');
   }
 }
