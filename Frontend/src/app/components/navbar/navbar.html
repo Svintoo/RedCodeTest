@@ -1,6 +1,16 @@
 <nav class="navbar navbar-expand-lg border-bottom">
   <div class="container-fluid">
-    <a routerLink="/"><h3>Biblioteket</h3></a>
+    <a routerLink="/">
+      <h3>Biblioteket</h3>
+    </a>
+    <button
+      type="button"
+      class="btn d-lg-none ms-auto me-2"
+      (click)="toggleDarkMode()"
+      title="Ändra mörkt/ljust tema"
+    >
+      <fa-icon [icon]="theme.darkMode() ? faSun : faMoon"></fa-icon>
+    </button>
     <button
       class="navbar-toggler"
       type="button"
@@ -21,34 +31,48 @@
             [class.lightMode]="!theme.darkMode()"
             aria-current="page"
             routerLink="/"
-            >Böcker</a
           >
+            Böcker
+          </a>
         </li>
+
+        @if (authService.loggedIn()) {
         <li class="nav-item">
           <a
             class="navlink active"
             [class.darkMode]="theme.darkMode()"
             [class.lightMode]="!theme.darkMode()"
             routerLink="/citat"
-            >Citat</a
           >
+            Citat
+          </a>
+        </li>
+        }
+        <li class="nav-item align-self-center">
+          <button
+            type="button"
+            class="btn d-none d-lg-block"
+            (click)="toggleDarkMode()"
+            title="Ändra mörkt/ljust tema"
+          >
+            <fa-icon [icon]="theme.darkMode() ? faSun : faMoon"></fa-icon>
+          </button>
         </li>
       </ul>
       <ul class="navbar-nav ms-auto mb-lg-0">
-        <li class="nav-item align-content-center">
-          <a class="navlink active me-2" routerLink="/logga-in">Logga in</a>
-        </li>
         @if (!authService.loggedIn()) {
         <li class="nav-item align-content-center">
-          <a class="navlink active me-2" routerLink="/registrera"> Registrera </a>
+          <button class="navlink active me-2" routerLink="/logga-in">Logga in</button>
+        </li>
+
+        <li class="nav-item align-content-center">
+          <button class="navlink active me-2" routerLink="/registrera">Registrera konto</button>
+        </li>
+        } @else {
+        <li class="nav-item align-content-center">
+          <button class="navlink active me-2" (click)="logOut()">Logga ut</button>
         </li>
         }
-        <li class="nav-item align-content-center">
-          <button type="button" class="btn btn-light" (click)="toggleDarkMode()">
-            Darkmode
-            <!-- <img src="the icon lib .moon or something"></img> -->
-          </button>
-        </li>
       </ul>
     </div>
   </div>

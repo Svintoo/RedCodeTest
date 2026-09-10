@@ -1,84 +1,90 @@
-import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { Card } from '../../components/card/card';
-import { AddBookPage } from '../add-book-page/add-book-page';
-
-type BookItem = {
-  Id: number;
-  Title: string;
-  Author: string;
-  Date: string;
-};
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { RouterLink, Router } from '@angular/router';
+import { RequestService, Book } from '../../services/request-service';
+import { AuthService } from '../../services/auth-service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faPlus, faBook, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-book-page',
-  imports: [RouterLink],
+  imports: [RouterLink, FontAwesomeModule],
   styleUrl: '../../app.css',
   template: `
-    <button
-      class="btn btn-primary btn-sm m-2"
-      (click)="showAddBookModal(true)"
-      routerLink="/ny-bok"
-    >
-      Lägg till ny bok
-    </button>
+    @if (auth.currentUser(); as user) {
+      @if (user.role === 'Admin') {
+        <button class="btn btn-primary btn-sm m-2" routerLink="/ny-bok" title="Lägg till ny bok">
+          <fa-icon [icon]="faPlus"></fa-icon>
+          <fa-icon [icon]="faBook"></fa-icon>
+        </button>
+      }
+    }
     <ul class="list-group list-group-flush">
-      @for (book of placeholderBooks; track book.Id) {
+      @for (book of books(); track book.id) {
         <li class="list-group-item d-flex justify-content-between">
-          <span class="text-wrap text-break"
-            >{{ book.Title }} - {{ book.Author }} - {{ book.Date }}</span
+          <span class="flex-grow-1 min-width-0 text-wrap text-break"
+            >{{ book.title }} - {{ book.author }} - {{ book.date.split('T')[0] }}</span
           >
-          <span class="d-flex flex-row">
-            <button
-              class="btn btn-secondary btn-sm me-1 ms-1"
-              [routerLink]="['/redigera-bok', book.Id]"
-            >
-              redigera
-            </button>
-            <button class="btn btn-danger btn-sm">ta bort</button>
-          </span>
+          @if (auth.currentUser(); as user) {
+            @if (user.role === 'Admin') {
+              <span class="d-inline-flex flex-shrink-0 ms-2">
+                <button
+                  class="btn btn-secondary btn-sm me-1 ms-1"
+                  [routerLink]="['/redigera-bok', book.id]"
+                  title="Redigera bok"
+                >
+                  <fa-icon [icon]="faEdit"></fa-icon>
+                </button>
+                <button
+                  class="btn btn-danger btn-sm"
+                  (click)="deleteBook(book.id)"
+                  title="Ta bort bok"
+                >
+                  <fa-icon [icon]="faTrash"></fa-icon>
+                </button>
+              </span>
+            }
+          }
         </li>
       }
     </ul>
   `,
 })
 export class BookPage {
-  showAddBook = false;
+  request = inject(RequestService);
+  router = inject(Router);
+  auth = inject(AuthService);
 
-  placeholderBooks: BookItem[] = [
-    {
-      Id: 0,
-      Title: 'The Hobbit',
-      Author: 'J.R.R. Tolkien',
-      Date: '2026-08-30',
-    },
-    {
-      Id: 1,
-      Title: '1984',
-      Author: 'George Orwell',
-      Date: '2026-08-28',
-    },
-    {
-      Id: 2,
-      Title: 'To Kill a Mockingbird',
-      Author: 'Harper Lee',
-      Date: '2026-08-20',
-    },
-    {
-      Id: 3,
-      Title: 'The Great Gatsby',
-      Author: 'F. Scott Fitzgerald',
-      Date: '2026-08-15',
-    },
-    {
-      Id: 4,
-      Title: 'Pride and Prejudice',
-      Author: 'Jane Austen',
-      Date: '2026-08-10',
-    },
-  ];
+  books = signal<Book[]>([]);
 
-  showAddBookModal(val: boolean) {
-    this.showAddBook = val;
+  faPlus = faPlus;
+  faBook = faBook;
+  faEdit = faEdit;
+  faTrash = faTrash;
+
+  ngOnInit() {
+    this.fetchBooks();
+  }
+
+  fetchBooks() {
+    this.books.set([]);
+    this.request.getBooks().subscribe({
+      next: (res) => {
+        this.books.set(res);
+      },
+      error: (err) => {
+        console.error('error fetching books: ', err);
+      },
+    });
+  }
+
+  deleteBook(id: number) {
+    this.request.deleteBook(id).subscribe({
+      next: () => {
+        this.fetchBooks();
+      },
+      error: (err) => {
+        console.error('error deleting book: ', err);
+      },
+    });
   }
 }

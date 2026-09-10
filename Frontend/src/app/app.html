@@ -1,7 +1,7 @@
-<div class="app" [attr.data-bs-theme]="theme.darkMode() ? 'dark' : 'light'">
-  <app-navbar [attr.data-bs-theme]="theme.darkMode() ? 'dark' : 'light'"> </app-navbar>
+<div class="app">
+  <app-navbar></app-navbar>
 
-  <main class="" [attr.data-bs-theme]="theme.darkMode() ? 'dark' : 'light'">
+  <main>
     <router-outlet></router-outlet>
   </main>
 </div>

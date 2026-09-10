@@ -36,6 +36,11 @@ form {
   border-radius: 1rem;
 }
 
+body {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
 .app {
   min-height: 100dvh;
   display: flex;
@@ -85,9 +90,9 @@ main {
   border: 0;
   margin: 1rem;
 }
-.book-grid {
+.quote-grid {
   display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 280px)) !important;
   gap: 1.5rem;
 }
 

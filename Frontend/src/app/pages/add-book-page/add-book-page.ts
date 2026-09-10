@@ -1,14 +1,7 @@
 import { Component, output, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
-//validationservice?
-
-type BookItem = {
-  Title: string;
-  Author: string;
-  Date: Date;
-};
+import { FormsModule } from '@angular/forms';
+import { RequestService, BookData } from '../../services/request-service';
 
 @Component({
   selector: 'app-add-book-page',
@@ -16,13 +9,14 @@ type BookItem = {
   template: ` <h2 class="m-2">Lägg till ny bok</h2>
     <form #bookForm="ngForm" (ngSubmit)="submitBook()">
       <div class="mb-3">
-        <label for="bookTitle" class="form-label">Titel</label>
+        <label for="title" class="form-label">Titel</label>
         <input
           type="text"
           class="form-control"
-          id="bookTitle"
+          id="title"
           name="title"
           [(ngModel)]="title"
+          maxlength="240"
           required
         />
       </div>
@@ -34,6 +28,7 @@ type BookItem = {
           id="Author"
           name="author"
           [(ngModel)]="author"
+          maxlength="60"
           required
         />
       </div>
@@ -57,25 +52,26 @@ export class AddBookPage {
   }
   router = inject(Router);
 
+  request = inject(RequestService);
+
   submitBook() {
     if (!this.title || !this.author || !this.date) {
-      //toast?
-      return;
-    }
-    const parsedDate = new Date(this.date);
-    if (isNaN(parsedDate.getTime())) {
       return;
     }
 
-    const book: BookItem = {
-      Title: this.title,
-      Author: this.author,
-      Date: parsedDate,
+    const book: BookData = {
+      title: this.title,
+      author: this.author,
+      date: this.date,
     };
-    console.log(book);
-    //RequestService.call()
 
-    //if ok
-    this.router.navigateByUrl('/');
+    this.request.addBook(book).subscribe({
+      next: (res) => {
+        this.router.navigateByUrl('/');
+      },
+      error: (err) => {
+        console.error('Failed to add book:', err);
+      },
+    });
   }
 }

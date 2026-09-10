@@ -1,21 +1,28 @@
-import { Component, inject, input } from '@angular/core';
-import { DarkMode } from '../../services/dark-mode';
-
-type BookItem = {
-  Id: number;
-  Name: string;
-  IsComplete: boolean;
-};
+import { Component, output, input } from '@angular/core';
+import { QuoteData } from '../../services/request-service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-book-card',
-  imports: [],
+  selector: 'app-quote-card',
+  imports: [FontAwesomeModule],
   templateUrl: './card.html',
   styleUrl: '../../app.css',
 })
 export class Card {
-  theme = inject(DarkMode);
-  book = input.required<BookItem>();
+  quote = input.required<QuoteData>();
+  editMode = input(false);
 
-  //crud lägger jag här
+  edit = output<number>();
+  remove = output<number>();
+
+  faEdit = faEdit;
+  faTrash = faTrash;
+
+  editQuote(id: number) {
+    this.edit.emit(id);
+  }
+  removeQuote(id: number) {
+    this.remove.emit(id);
+  }
 }

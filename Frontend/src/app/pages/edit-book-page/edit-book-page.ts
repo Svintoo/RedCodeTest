@@ -1,14 +1,7 @@
-import { Component, output, inject } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
-//validationservice?
-
-type BookItem = {
-  Title: string;
-  Author: string;
-  Date: Date;
-};
+import { RequestService, BookData } from '../../services/request-service';
 
 @Component({
   selector: 'app-add-book-modal',
@@ -45,42 +38,49 @@ type BookItem = {
   styleUrl: '../../app.css',
 })
 export class EditBookPage {
-  title = '';
-  author = '';
-  date = '';
+  title = signal('');
+  author = signal('');
+  date = signal('');
 
-  close = output<void>();
-
-  closeModal() {
-    this.close.emit();
-  }
   router = inject(Router);
+  route = inject(ActivatedRoute);
+  id = this.route.snapshot.paramMap.get('id');
+
+  request = inject(RequestService);
 
   submitBook() {
-    if (!this.title || !this.author || !this.date) {
-      //toast?
-      return;
-    }
-    const parsedDate = new Date(this.date);
-    if (isNaN(parsedDate.getTime())) {
+    if (!this.title() || !this.author() || !this.date()) {
       return;
     }
 
-    const book: BookItem = {
-      Title: this.title,
-      Author: this.author,
-      Date: parsedDate,
+    const book: BookData = {
+      title: this.title(),
+      author: this.author(),
+      date: this.date(),
     };
-    console.log(book);
-    //RequestService.call()
 
-    //if ok
-    this.router.navigateByUrl('/');
+    this.request.updateBook(Number(this.id), book).subscribe({
+      next: (res) => {
+        this.router.navigateByUrl('/');
+      },
+      error: (err) => {
+        console.error('status:', err.status);
+        console.error('validation errors:', err.error?.errors);
+        console.error('full error:', err);
+      },
+    });
   }
 
-  route = inject(ActivatedRoute);
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    console.log(id);
+    this.request.getBook(Number(this.id)).subscribe({
+      next: (res) => {
+        this.title.set(res.title);
+        this.author.set(res.author);
+        this.date.set(res.date);
+      },
+      error: (err) => {
+        console.error('error fetching book: ', err);
+      },
+    });
   }
 }

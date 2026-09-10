@@ -1,2 +1,6 @@
 /Backend/bin
 /Backend/obj
+Frontend/.prettierrc
+.env
+Frontend/src/proxy.conf.json
+publish

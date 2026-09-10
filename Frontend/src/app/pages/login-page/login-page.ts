@@ -1,11 +1,9 @@
-import { Component, inject } from '@angular/core';
-import { EmailValidator, FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth-service';
-
-type Credentials = {
-  email: string;
-  password: string;
-};
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { AuthService, Credentials } from '../../services/auth-service';
+import { RequestService } from '../../services/request-service';
+import { Router } from '@angular/router';
+import { LocalStorageService } from '../../services/localstorage';
 
 @Component({
   selector: 'app-login-page',
@@ -36,6 +34,10 @@ type Credentials = {
           required
         />
       </div>
+      @if (loginError() == true) {
+        <p class=" ms-2 small text-danger">Något gick fel med att logga in</p>
+      }
+
       <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Logga in</button>
     </form>
   `,
@@ -44,20 +46,33 @@ export class LoginPage {
   email = '';
   password = '';
 
-  authService = inject(AuthService);
+  loginError = signal(false);
+
+  auth = inject(AuthService);
+  request = inject(RequestService);
+  router = inject(Router);
+  storage = inject(LocalStorageService);
 
   submitLogin() {
     if (!this.email || !this.password) {
-      //toast?
       return;
     }
+    this.loginError.set(false);
+
     const credentials: Credentials = {
       email: this.email,
       password: this.password,
     };
-    
-    //await LoginService.logIn(credentials) ok save token
-    console.log('logging in');
-    this.authService.login(credentials);
+
+    this.auth.login(credentials).subscribe({
+      next: (res) => {
+        this.auth.handleLogin(res);
+        this.router.navigateByUrl('/');
+      },
+      error: (err) => {
+        console.error(err);
+        this.loginError.set(true);
+      },
+    });
   }
 }
