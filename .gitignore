@@ -4,3 +4,4 @@ Frontend/.prettierrc
 .env
 Frontend/src/proxy.conf.json
 publish
+Backend/books.db

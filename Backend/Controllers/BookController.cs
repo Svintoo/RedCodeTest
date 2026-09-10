@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using BookApi.Models;
+using Backend.Services;
 
 namespace BookApi.Controllers;
 
@@ -8,38 +9,56 @@ namespace BookApi.Controllers;
 [Route("api/[controller]")]
 public class BookController : ControllerBase
 {
-    private readonly BookContext _context;
+    private readonly BookService _bookService;
 
-    public BookController(BookContext context)
+    public BookController(BookService bookService)
     {
-        _context = context;
+        _bookService = bookService;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BookItem>>> GetBook()
+    public async Task<ActionResult<IEnumerable<BookItem>>> GetBooks()
     {
-        return await _context.BookItems.ToListAsync();
+        var books = await _bookService.GetBooks();
+        return Ok(books);
     }
 
+    [Authorize]
     [HttpGet("{id}")]
-public async Task<ActionResult<BookItem>> GetBookItem(long id)
-{
-    var bookItem = await _context.BookItems.FindAsync(id);
-
-    if (bookItem == null)
+    public async Task<ActionResult<BookItem?>> GetBookItem(long id)
     {
-        return NotFound();
+        var result = await _bookService.GetBookItem(id);
+        if (result == null) return NotFound();
+
+        return Ok(result);
+    }
+    [Authorize(Roles = "Admin")]
+    [HttpPost]
+    public async Task<ActionResult<BookItem>> PostBookItem(BookItem bookItem)
+    {
+        var result = await _bookService.PostBookItem(bookItem);
+        if (result == null) return NotFound();
+
+        return CreatedAtAction(nameof(GetBooks), new { id = result.Id }, result);
+    }
+    [Authorize(Roles = "Admin")]
+    [HttpPatch("{id}")]
+    public async Task<ActionResult<BookItem>> PatchBookItem(long id, BookItem bookItem)
+    {
+        var book = await _bookService.PatchBookItem(id, bookItem);
+        if (book == null) return NotFound();
+
+        return Ok(book);
+    }
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteBook(long id)
+    {
+        var book = await _bookService.DeleteBook(id);
+
+        if (!book) return NotFound();
+
+        return Ok();
     }
 
-    return bookItem;
-}
-
-    [HttpPost]
-public async Task<ActionResult<BookItem>> PostBookItem(BookItem bookItem)
-{
-    _context.BookItems.Add(bookItem);
-    await _context.SaveChangesAsync();
-
-    return CreatedAtAction(nameof(GetBook), new { id = bookItem.Id }, bookItem);
-}
 }
