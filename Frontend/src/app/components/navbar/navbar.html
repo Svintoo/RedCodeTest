@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg border-bottom">
+<nav class="navbar navbar-expand-lg border-bottom shadow-lg">
   <div class="container-fluid">
     <a routerLink="/">
       <h3>Biblioteket</h3>
@@ -70,7 +70,13 @@
         </li>
         } @else {
         <li class="nav-item align-content-center">
-          <button class="navlink active me-2" (click)="logOut()">Logga ut</button>
+          <button class="navlink active me-2 btn btn-outline-danger" (click)="logOut()">
+            Logga ut
+          </button>
+        </li>
+        } @if(authService.loggedIn()){
+        <li class="align-self-center small user-select-none">
+          Inloggad som {{authService.currentUser()!.role === "User"?"användare":"admin"}}
         </li>
         }
       </ul>

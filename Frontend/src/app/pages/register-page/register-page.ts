@@ -21,7 +21,11 @@ import { RequestService, Roles, RegisterCredentials } from '../../services/reque
           maxlength="254"
           minlength="6"
           required
+          [class.border-danger]="registerError()"
         />
+        @if (missingAt() == true) {
+          <p class=" ms-2 small text-danger">adressen saknar @</p>
+        }
       </div>
       <div class="mb-3">
         <label for="passwordInput" class="form-label">Lösenord</label>
@@ -34,6 +38,7 @@ import { RequestService, Roles, RegisterCredentials } from '../../services/reque
           maxlength="128"
           minlength="8"
           required
+          [class.border-danger]="registerError()"
         />
         <small class="small m-2 text-muted">Minst 8 tecken långt</small>
       </div>
@@ -49,7 +54,9 @@ import { RequestService, Roles, RegisterCredentials } from '../../services/reque
       @if (registerError() == true) {
         <p class=" ms-2 small text-danger">Något gick fel med registreringen</p>
       }
-      <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Logga in</button>
+      <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">
+        Registrera användare
+      </button>
     </form>
   `,
 })
@@ -60,13 +67,20 @@ export class RegisterPage {
   role = Roles.User;
 
   registerError = signal(false);
+  missingAt = signal(false);
 
   request = inject(RequestService);
   router = inject(Router);
 
   submitRegistration() {
     if (!this.email || !this.password) {
+      this.registerError.set(false);
       return;
+    }
+
+    if (!this.email.includes('@')) {
+      this.registerError.set(true);
+      this.missingAt.set(true);
     }
 
     this.registerError.set(false);

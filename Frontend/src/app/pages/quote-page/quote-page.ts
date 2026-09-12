@@ -57,7 +57,7 @@ export class QuotePage {
   auth = inject(AuthService);
 
   quotes = signal<QuoteData[]>([]);
-  editMode = signal(false);
+  editMode = signal(true);
 
   quoteToEdit = signal<QuoteData | null>(null);
 

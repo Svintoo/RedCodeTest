@@ -21,7 +21,11 @@ import { LocalStorageService } from '../../services/localstorage';
           name="email"
           [(ngModel)]="email"
           required
+          [class.border-danger]="loginError()"
         />
+        @if (missingAt() == true) {
+          <p class=" ms-2 small text-danger">adressen saknar @</p>
+        }
       </div>
       <div class="mb-3">
         <label for="exampleInputPassword1" class="form-label">Lösenord</label>
@@ -32,7 +36,9 @@ import { LocalStorageService } from '../../services/localstorage';
           name="password"
           [(ngModel)]="password"
           required
+          [class.border-danger]="loginError()"
         />
+        <small class="small m-2 text-muted">Minst 8 tecken långt</small>
       </div>
       @if (loginError() == true) {
         <p class=" ms-2 small text-danger">Något gick fel med att logga in</p>
@@ -47,6 +53,7 @@ export class LoginPage {
   password = '';
 
   loginError = signal(false);
+  missingAt = signal(false);
 
   auth = inject(AuthService);
   request = inject(RequestService);
@@ -55,8 +62,15 @@ export class LoginPage {
 
   submitLogin() {
     if (!this.email || !this.password) {
+      this.loginError.set(true);
       return;
     }
+
+    if (!this.email.includes('@')) {
+      this.loginError.set(true);
+      this.missingAt.set(true);
+    }
+
     this.loginError.set(false);
 
     const credentials: Credentials = {
