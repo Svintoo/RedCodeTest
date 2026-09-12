@@ -8,7 +8,7 @@ import { RequestService, Roles, RegisterCredentials } from '../../services/reque
   imports: [FormsModule],
   template: `
     <h2 class="m-2">Registrering</h2>
-    <form class="m-2" #loginForm="ngForm" (ngSubmit)="submitRegistration()">
+    <form class="m-2" #registerForm="ngForm" (ngSubmit)="submitRegistration()">
       <div class="mb-3">
         <label for="email" class="form-label">Email address</label>
         <input
@@ -54,7 +54,12 @@ import { RequestService, Roles, RegisterCredentials } from '../../services/reque
       @if (registerError() == true) {
         <p class=" ms-2 small text-danger">Något gick fel med registreringen</p>
       }
-      <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="registerForm.invalid"
+        [class.btn-outline-secondary]="registerForm.invalid"
+      >
         Registrera användare
       </button>
     </form>

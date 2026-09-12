@@ -44,7 +44,14 @@ import { LocalStorageService } from '../../services/localstorage';
         <p class=" ms-2 small text-danger">Något gick fel med att logga in</p>
       }
 
-      <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid">Logga in</button>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="loginForm.invalid"
+        [class.btn-outline-secondary]="loginForm.invalid"
+      >
+        Logga in
+      </button>
     </form>
   `,
 })
