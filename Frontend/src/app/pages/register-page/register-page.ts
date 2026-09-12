@@ -35,6 +35,7 @@ import { RequestService, Roles, RegisterCredentials } from '../../services/reque
           minlength="8"
           required
         />
+        <small class="small m-2 text-muted">Minst 8 tecken långt</small>
       </div>
       <div class="mb-3">
         <div class="input-group mb-3">
