@@ -15,6 +15,7 @@ import { faPlus, faBook, faEdit, faTrash } from '@fortawesome/free-solid-svg-ico
         <fa-icon [icon]="faPlus"></fa-icon>
         <fa-icon [icon]="faBook"></fa-icon>
       </button>
+      <small>- Lägg till ny bok</small>
     }
     <ul class="list-group list-group-flush">
       @for (book of books(); track book.id) {
