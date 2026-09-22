@@ -11,12 +11,10 @@ import { faPlus, faBook, faEdit, faTrash } from '@fortawesome/free-solid-svg-ico
   styleUrl: '../../app.css',
   template: `
     @if (auth.currentUser(); as user) {
-      @if (user.role === 'Admin') {
-        <button class="btn btn-primary btn-sm m-2" routerLink="/ny-bok" title="Lägg till ny bok">
-          <fa-icon [icon]="faPlus"></fa-icon>
-          <fa-icon [icon]="faBook"></fa-icon>
-        </button>
-      }
+      <button class="btn btn-primary btn-sm m-2" routerLink="/ny-bok" title="Lägg till ny bok">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        <fa-icon [icon]="faBook"></fa-icon>
+      </button>
     }
     <ul class="list-group list-group-flush">
       @for (book of books(); track book.id) {
@@ -25,24 +23,22 @@ import { faPlus, faBook, faEdit, faTrash } from '@fortawesome/free-solid-svg-ico
             >{{ book.title }} - {{ book.author }} - {{ book.date.split('T')[0] }}</span
           >
           @if (auth.currentUser(); as user) {
-            @if (user.role === 'Admin') {
-              <span class="d-inline-flex flex-shrink-0 ms-2">
-                <button
-                  class="btn btn-secondary btn-sm me-1 ms-1"
-                  [routerLink]="['/redigera-bok', book.id]"
-                  title="Redigera bok"
-                >
-                  <fa-icon [icon]="faEdit"></fa-icon>
-                </button>
-                <button
-                  class="btn btn-danger btn-sm"
-                  (click)="deleteBook(book.id)"
-                  title="Ta bort bok"
-                >
-                  <fa-icon [icon]="faTrash"></fa-icon>
-                </button>
-              </span>
-            }
+            <span class="d-inline-flex flex-shrink-0 ms-2">
+              <button
+                class="btn btn-secondary btn-sm me-1 ms-1"
+                [routerLink]="['/redigera-bok', book.id]"
+                title="Redigera bok"
+              >
+                <fa-icon [icon]="faEdit"></fa-icon>
+              </button>
+              <button
+                class="btn btn-danger btn-sm"
+                (click)="deleteBook(book.id)"
+                title="Ta bort bok"
+              >
+                <fa-icon [icon]="faTrash"></fa-icon>
+              </button>
+            </span>
           }
         </li>
       }
